@@ -1,0 +1,244 @@
+<html>
+
+<head>
+<style type="text/css">
+.knitr .inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage .left {
+  text-align: left;
+}
+.rimage .right {
+  text-align: right;
+}
+.rimage .center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+<title>Data Science Capstone Project: Milestone Report</title>
+</head>
+
+<body>
+
+<h1>Data Science Capstone Project: Milestone Report</h1>
+<p><b>Heiko Geissler</b></p>
+<p>November 27, 2016</p>
+
+<h2>Introduction</h2>
+
+<p>This is the Milestone Report for the Data Science Capstone project. It describes the major features of the training data, reports any interesting finding and skethces the plan for creating a prediction algorithm and Shiny app.</p>
+
+<h2>Packages</h2>
+
+<p>There are a lot of packages to download for the different parts of this report.</p>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">setwd</span><span class="hl std">(</span><span class="hl str">&quot;C:\\Users\\Heiko\\ML\\CapStone&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">suppressMessages</span><span class="hl std">(</span><span class="hl kwd">library</span><span class="hl std">(tm,</span> <span class="hl kwc">warn.conflicts</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">,</span> <span class="hl kwc">quietly</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">))</span>
+<span class="hl kwd">suppressMessages</span><span class="hl std">(</span><span class="hl kwd">library</span><span class="hl std">(RWeka,</span> <span class="hl kwc">warn.conflicts</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">,</span> <span class="hl kwc">quietly</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">))</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'RWeka' was built under R version 3.2.5
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">suppressMessages</span><span class="hl std">(</span><span class="hl kwd">library</span><span class="hl std">(stringi,</span> <span class="hl kwc">warn.conflicts</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">,</span> <span class="hl kwc">quietly</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">))</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'stringi' was built under R version 3.2.5
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">suppressMessages</span><span class="hl std">(</span><span class="hl kwd">library</span><span class="hl std">(ggplot2,</span> <span class="hl kwc">warn.conflicts</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">,</span> <span class="hl kwc">quietly</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">))</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'ggplot2' was built under R version 3.2.5
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">suppressMessages</span><span class="hl std">(</span><span class="hl kwd">library</span><span class="hl std">(qdap,</span> <span class="hl kwc">warn.conflicts</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">,</span> <span class="hl kwc">quietly</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">))</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'qdap' was built under R version 3.2.5
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'qdapDictionaries' was built under R version 3.2.5
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'qdapRegex' was built under R version 3.2.5
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'qdapTools' was built under R version 3.2.5
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning: package 'RColorBrewer' was built under R version 3.2.5
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">suppressMessages</span><span class="hl std">(</span><span class="hl kwd">library</span><span class="hl std">(NLP,</span> <span class="hl kwc">warn.conflicts</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">,</span> <span class="hl kwc">quietly</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">))</span>
+</pre></div>
+</div></div>
+
+
+<h2>Data</h2>
+<h3>Download Of The Data</h3>
+
+<p>The data for this project are provided by SwiftKey(http://swiftkey.com/). These are text files compiled from news articles, twitter and blogs in english, finish, german and russian.</p>
+
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">datafile</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;Coursera-SwiftKey.zip&quot;</span>
+<span class="hl kwa">if</span><span class="hl std">(</span><span class="hl opt">!</span><span class="hl kwd">file.exists</span><span class="hl std">(datafile))</span>
+<span class="hl std">{</span>
+  <span class="hl std">fileURL</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;http://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip&quot;</span>
+  <span class="hl kwd">download.file</span><span class="hl std">(fileURL,</span> <span class="hl kwc">destfile</span> <span class="hl std">= datafile)</span>
+  <span class="hl kwd">unzip</span><span class="hl std">(datafile)</span>
+<span class="hl std">}</span>
+
+<span class="hl kwd">setwd</span><span class="hl std">(</span><span class="hl str">&quot;Coursera-SwiftKey/final/en_US&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<p>For the purposes of this project only the English text files will be used.</p>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">blogs</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">readLines</span><span class="hl std">(</span><span class="hl str">&quot;en_US.blogs.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">encoding</span> <span class="hl std">=</span> <span class="hl str">&quot;UTF-8&quot;</span><span class="hl std">,</span> <span class="hl kwc">skipNul</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">news</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">readLines</span><span class="hl std">(</span><span class="hl str">&quot;en_US.news.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">encoding</span> <span class="hl std">=</span> <span class="hl str">&quot;UTF-8&quot;</span><span class="hl std">,</span> <span class="hl kwc">skipNul</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="warning"><pre class="knitr r">## Warning in readLines(&quot;en_US.news.txt&quot;, encoding = &quot;UTF-8&quot;, skipNul = TRUE):
+## unvollständige letzte Zeile in 'en_US.news.txt' gefunden
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">twitter</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">readLines</span><span class="hl std">(</span><span class="hl str">&quot;en_US.twitter.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">encoding</span> <span class="hl std">=</span> <span class="hl str">&quot;UTF-8&quot;</span><span class="hl std">,</span> <span class="hl kwc">skipNul</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<h3>Calculate Basic Statistics</h3>
+
+<p>First we check the basic statistics of these 3 files. 
+
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">blogs.size</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">file.info</span><span class="hl std">(</span><span class="hl str">&quot;en_US.blogs.txt&quot;</span><span class="hl std">)</span><span class="hl opt">$</span><span class="hl std">size</span> <span class="hl opt">/</span> <span class="hl num">1024</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl std">)</span>
+<span class="hl std">blogs.stats</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">stri_stats_general</span><span class="hl std">(blogs)</span>
+<span class="hl std">blogs.words</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sum</span><span class="hl std">(</span><span class="hl kwd">stri_count_words</span><span class="hl std">(blogs))</span>
+<span class="hl std">blogs.words.per.line</span> <span class="hl kwb">&lt;-</span> <span class="hl std">blogs.words</span><span class="hl opt">/</span><span class="hl std">blogs.stats[</span><span class="hl num">1</span><span class="hl std">]</span>
+
+<span class="hl std">news.size</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">file.info</span><span class="hl std">(</span><span class="hl str">&quot;en_US.news.txt&quot;</span><span class="hl std">)</span><span class="hl opt">$</span><span class="hl std">size</span> <span class="hl opt">/</span> <span class="hl num">1024</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl std">)</span>
+<span class="hl std">news.stats</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">stri_stats_general</span><span class="hl std">(news)</span>
+<span class="hl std">news.words</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sum</span><span class="hl std">(</span><span class="hl kwd">stri_count_words</span><span class="hl std">(news))</span>
+<span class="hl std">news.words.per.line</span> <span class="hl kwb">&lt;-</span> <span class="hl std">news.words</span><span class="hl opt">/</span><span class="hl std">news.stats[</span><span class="hl num">1</span><span class="hl std">]</span>
+
+<span class="hl std">twitter.size</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">file.info</span><span class="hl std">(</span><span class="hl str">&quot;en_US.twitter.txt&quot;</span><span class="hl std">)</span><span class="hl opt">$</span><span class="hl std">size</span> <span class="hl opt">/</span> <span class="hl num">1024</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl std">)</span>
+<span class="hl std">twitter.stats</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">stri_stats_general</span><span class="hl std">(twitter)</span>
+<span class="hl std">twitter.words</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sum</span><span class="hl std">(</span><span class="hl kwd">stri_count_words</span><span class="hl std">(twitter))</span>
+<span class="hl std">twitter.words.per.line</span> <span class="hl kwb">&lt;-</span> <span class="hl std">twitter.words</span><span class="hl opt">/</span><span class="hl std">twitter.stats[</span><span class="hl num">1</span><span class="hl std">]</span>
+
+<span class="hl std">data.stats</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwc">Source</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Blogs&quot;</span><span class="hl std">,</span><span class="hl str">&quot;News&quot;</span><span class="hl std">,</span><span class="hl str">&quot;Twitter&quot;</span><span class="hl std">),</span>
+        <span class="hl kwc">Size.MB</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(blogs.size, news.size, twitter.size),</span>
+        <span class="hl kwc">Total.Lines</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(blogs.stats[</span><span class="hl num">1</span><span class="hl std">], news.stats[</span><span class="hl num">1</span><span class="hl std">], twitter.stats[</span><span class="hl num">1</span><span class="hl std">]),</span>
+        <span class="hl kwc">Total.Words</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(blogs.words, news.words, twitter.words),</span>
+        <span class="hl kwc">Total.Chars</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(blogs.stats[</span><span class="hl num">3</span><span class="hl std">], news.stats[</span><span class="hl num">3</span><span class="hl std">], twitter.stats[</span><span class="hl num">3</span><span class="hl std">]),</span>
+        <span class="hl kwc">Words.Per.Line</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(blogs.words.per.line, news.words.per.line, twitter.words.per.line))</span>
+
+<span class="hl std">data.stats</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##    Source Size.MB Total.Lines Total.Words Total.Chars Words.Per.Line
+## 1   Blogs     200      899288    37546246   206824382       41.75108
+## 2    News     196       77259     2674536    15639408       34.61779
+## 3 Twitter     159     2360148    30093410   162096241       12.75065
+</pre></div>
+</div></div>
+
+
+<h3>Clean The Data And Build The NGram</h3>
+
+<p>For this milestone report we use only a small sample of thes data for performance reasons. And we clean the data And building</p>
+
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">sampleB</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sample</span><span class="hl std">(blogs,</span> <span class="hl num">2000</span><span class="hl std">)</span>
+<span class="hl std">sampleN</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sample</span><span class="hl std">(news,</span> <span class="hl num">2000</span><span class="hl std">)</span>
+<span class="hl std">sampleT</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sample</span><span class="hl std">(twitter,</span> <span class="hl num">2000</span><span class="hl std">)</span>
+
+<span class="hl std">sample</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(sampleB, sampleN, sampleT)</span>
+
+<span class="hl std">cleaned</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sent_detect</span><span class="hl std">(sample)</span>
+<span class="hl std">cleaned</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">tolower</span><span class="hl std">(cleaned)</span>
+<span class="hl std">cleaned</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">removeNumbers</span><span class="hl std">(cleaned)</span>
+<span class="hl std">cleaned</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">removePunctuation</span><span class="hl std">(cleaned)</span>
+<span class="hl std">cleaned</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">stripWhitespace</span><span class="hl std">(cleaned)</span>
+<span class="hl std">cleaned</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">data.frame</span><span class="hl std">(cleaned,</span> <span class="hl kwc">stringsAsFactors</span><span class="hl std">=</span><span class="hl num">FALSE</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">words</span><span class="hl kwb">&lt;-</span><span class="hl kwd">WordTokenizer</span><span class="hl std">(cleaned)</span>
+<span class="hl std">grams</span><span class="hl kwb">&lt;-</span><span class="hl kwd">NGramTokenizer</span><span class="hl std">(cleaned)</span>
+
+<span class="hl kwa">for</span><span class="hl std">(i</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl kwd">length</span><span class="hl std">(grams))</span>
+<span class="hl std">{</span> <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">length</span><span class="hl std">(</span><span class="hl kwd">WordTokenizer</span><span class="hl std">(grams[i]))</span> <span class="hl opt">==</span> <span class="hl num">2</span><span class="hl std">)</span> <span class="hl kwa">break</span> <span class="hl std">}</span>
+<span class="hl kwa">for</span><span class="hl std">(j</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl kwd">length</span><span class="hl std">(grams))</span>
+<span class="hl std">{</span> <span class="hl kwa">if</span><span class="hl std">(</span><span class="hl kwd">length</span><span class="hl std">(</span><span class="hl kwd">WordTokenizer</span><span class="hl std">(grams[j]))</span> <span class="hl opt">==</span> <span class="hl num">1</span><span class="hl std">)</span> <span class="hl kwa">break</span> <span class="hl std">}</span>
+
+<span class="hl std">oneGrams</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwd">table</span><span class="hl std">(words))</span>
+<span class="hl std">twoGrams</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwd">table</span><span class="hl std">(grams[i</span><span class="hl opt">:</span><span class="hl std">(j</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">)]))</span>
+<span class="hl std">threeGrams</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwd">table</span><span class="hl std">(grams[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl std">(i</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">)]))</span>
+
+<span class="hl std">oneGrams</span> <span class="hl kwb">&lt;-</span> <span class="hl std">oneGrams[</span><span class="hl kwd">order</span><span class="hl std">(oneGrams</span><span class="hl opt">$</span><span class="hl std">Freq,</span> <span class="hl kwc">decreasing</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">), ]</span>
+<span class="hl std">twoGrams</span> <span class="hl kwb">&lt;-</span> <span class="hl std">twoGrams[</span><span class="hl kwd">order</span><span class="hl std">(twoGrams</span><span class="hl opt">$</span><span class="hl std">Freq,</span> <span class="hl kwc">decreasing</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">), ]</span>
+<span class="hl std">threeGrams</span> <span class="hl kwb">&lt;-</span> <span class="hl std">threeGrams[</span><span class="hl kwd">order</span><span class="hl std">(threeGrams</span><span class="hl opt">$</span><span class="hl std">Freq,</span> <span class="hl kwc">decreasing</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">), ]</span>
+</pre></div>
+</div></div>
+
+<h3>Plots</h3>
+
+<p>First we plot the word cloud and the most frequent words for the NGramms</p>
+
+<p><b>The 1-Gramm</b></p>
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">barplot</span><span class="hl std">(oneGrams[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">20</span><span class="hl std">,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">col</span><span class="hl std">=</span><span class="hl str">&quot;blue&quot;</span><span class="hl std">,</span>
+        <span class="hl kwc">names.arg</span><span class="hl std">=oneGrams</span><span class="hl opt">$</span><span class="hl std">Var1[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">20</span><span class="hl std">],</span> <span class="hl kwc">srt</span><span class="hl std">=</span><span class="hl num">45</span><span class="hl std">,</span> <span class="hl kwc">xlim</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span><span class="hl num">20</span><span class="hl std">),</span> <span class="hl kwc">las</span><span class="hl std">=</span><span class="hl num">2</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" class="plot" /></div></div>
+
+
+<p><b>The 2-Gramm</b></p>
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">barplot</span><span class="hl std">(twoGrams[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">20</span><span class="hl std">,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">col</span><span class="hl std">=</span><span class="hl str">&quot;yellow&quot;</span><span class="hl std">,</span>
+        <span class="hl kwc">names.arg</span><span class="hl std">=twoGrams</span><span class="hl opt">$</span><span class="hl std">Var1[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">20</span><span class="hl std">],</span> <span class="hl kwc">srt</span><span class="hl std">=</span><span class="hl num">45</span><span class="hl std">,</span> <span class="hl kwc">xlim</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span><span class="hl num">20</span><span class="hl std">),</span> <span class="hl kwc">las</span><span class="hl std">=</span><span class="hl num">2</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" class="plot" /></div></div>
+
+<p><b>The 3-Gramm</b></p>
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">barplot</span><span class="hl std">(threeGrams[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">20</span><span class="hl std">,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">col</span><span class="hl std">=</span><span class="hl str">&quot;red&quot;</span><span class="hl std">,</span>
+        <span class="hl kwc">names.arg</span><span class="hl std">=threeGrams</span><span class="hl opt">$</span><span class="hl std">Var1[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">20</span><span class="hl std">],</span> <span class="hl kwc">srt</span><span class="hl std">=</span><span class="hl num">45</span><span class="hl std">,</span> <span class="hl kwc">xlim</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span><span class="hl num">20</span><span class="hl std">),</span> <span class="hl kwc">las</span><span class="hl std">=</span><span class="hl num">2</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" class="plot" /></div></div>
+
+<h3>Next Steps</h3>
+
+<p>This concludes our exploratory analysis. For our predictive algorithm we will use the n-gram model. First we use the trigram model to predict the next word. If no match can be found we use then the bigram.
+</p>
+
+</body>
+</html>
